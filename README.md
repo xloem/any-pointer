@@ -1,5 +1,5 @@
-# any-pointer
-A single-header smart pointer that wraps other kinds of smart pointers.
+# any_ptr
+A simple single-header smart pointer that wraps other kinds of smart pointers.
 
 ## Usage
 
