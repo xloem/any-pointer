@@ -1,0 +1,54 @@
+#include <functional>
+#include <memory> 
+#include <variant>
+
+namespace any_ptr_ns
+{
+
+template <typename ElementType>
+using any_ptr_variant = std::variant
+	< ElementType *,
+	  std::shared_ptr<ElementType>,
+	  std::unique_ptr<ElementType>,
+	  std::unique_ptr<ElementType, std::function<void(ElementType*)>> >;
+
+// Only the bare essentials are implemented here.
+// Feel free to flush out the methods, and optionally submit a PR.
+
+template <typename ElementType>
+class any_ptr : public any_ptr_variant<ElementType>
+{
+public:
+	using element_type = ElementType;
+	using pointer = element_type *;
+	using variant = any_ptr_variant<element_type>;
+
+	using variant::variant;
+	using variant::operator=;
+
+	pointer get() const noexcept
+	{
+		switch(variant::index()) {
+		case 0: // c-style
+			return std::get<pointer>(static_cast<variant const &>(*this));
+		case 1: // shared
+			return std::get<std::shared_ptr<element_type>>(static_cast<variant const &>(*this)).get();
+		case 2: // unique
+			return std::get<std::unique_ptr<element_type>>(static_cast<variant const &>(*this)).get();
+		case 3: // unique with deleter
+			return std::get<std::unique_ptr<element_type, std::function<void(pointer)>>>(static_cast<variant const &>(*this)).get();
+		}
+	}
+
+	element_type & operator*() const noexcept
+	{
+		return *get();
+	}
+
+	pointer operator->() const noexcept
+	{
+		return get();
+	}
+};
+
+}
