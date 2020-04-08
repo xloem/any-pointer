@@ -1,5 +1,5 @@
 # any_ptr
-A simple single-header smart pointer that wraps other kinds of smart pointers.
+A simple single-header smart pointer that wraps other kinds of smart pointers.  This is useful for areas of libraries where the user may want to decide what kind of lifetime management their pointers have.
 
 ## Usage
 
